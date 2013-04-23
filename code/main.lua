@@ -17,6 +17,11 @@ local function mainSetup()
 	local function testMainView()
 		require "views.MainView"
 		local mainView = MainView:new()
+
+		require "components.PushButton"
+		local button = PushButton:new()
+		button.x = 300
+		button.y = 300
 	end
 
 	setupGlobals()

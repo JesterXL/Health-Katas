@@ -24,6 +24,11 @@ function MainView:new()
 		self:insert(header)
 		self.header = header
 
+		local logo = display.newImage("images/icon-logo.png")
+		logo:setReferencePoint(display.TopLeftReferencePoint)
+		self:insert(logo)
+		self.logo = logo
+
 		local backButton = BackButton:new()
 		self:insert(backButton)
 		self.backButton = backButton
@@ -41,6 +46,8 @@ function MainView:new()
 		self.buttonInfo = buttonInfo
 
 
+		logo.x = 20
+		logo.y = 20
 		toolbar.y = stage.height - toolbar.height + 20
 		backButton.y = header.y + header.height / 2 - backButton.height / 2
 		backButton.x = 8
