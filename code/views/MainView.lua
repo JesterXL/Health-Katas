@@ -56,7 +56,7 @@ function MainView:new()
 
 		logo.x = 20
 		logo.y = 20
-		toolbar.y = stage.height - toolbar.height + 20
+		toolbar.y = stage.height - toolbar.height + 29
 		backButton.y = header.y + header.height / 2 - backButton.height / 2
 		backButton.x = 8
 		backButton:addEventListener("onBackButtonPressed", self)

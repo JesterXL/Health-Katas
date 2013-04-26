@@ -202,7 +202,7 @@ function ProgressModel:new()
 				end
 				k = k + 1
 			end
-			i = i + 1
+			l = l + 1
 		end
 		return nil
 	end

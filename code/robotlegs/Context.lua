@@ -15,16 +15,24 @@ function Context:new()
 	
 	function context:init()
 		Runtime:addEventListener("onRobotlegsViewCreated", self)
-		Runtime:addEventListener("onRototlegsViewDestroyed", self)
+		Runtime:addEventListener("onRobotlegsViewDestroyed", self)
 	end
 
 	function context:onRobotlegsViewCreated(event)
+		print("Context::onRobotlegsViewCreated")
 		local view = event.target
+		if view == nil then
+			error("ERROR: Robotlegs Context received a create event, but no view instance in the event object.")
+		end
 		self:createMediator(view)
 	end
 
 	function context:onRobotlegsViewDestroyed(event)
+		print("Context::onRobotlegsViewDestroyed")
 		local view = event.target
+		if view == nil then
+			error("ERROR: Robotlegs Context received a destroyed event, but no view instance in the event object.")
+		end
 		self:removeMediator(view)
 	end
 
@@ -99,7 +107,8 @@ function Context:new()
 			if(mediatorInstance.viewInstance == viewInstance) then
 				mediatorInstance:onRemove()
 				mediatorInstance:destroy()
-				table.remove(self.mediatorInstances, mediatorInstance)
+				local mediatorIndex = table.indexOf(self.mediatorInstances, mediatorInstance)
+				table.remove(self.mediatorInstances, mediatorIndex)
 				return true
 			end
 		end

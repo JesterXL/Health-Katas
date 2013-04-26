@@ -295,8 +295,9 @@ function KataView:new(layoutWidth, layoutHeight)
 	end
 
 	function view:destroy()
-		
-		Runtime:dispatchEvent({name="onRobotlegsViewDestroyed"})
+		print("KataView::destroy")
+
+		Runtime:dispatchEvent({name="onRobotlegsViewDestroyed", target=self})
 
 		self.yesButton:removeEventListener("touch", self.yesButton)
 		self.noButton:removeEventListener("touch", self.noButton)
@@ -314,6 +315,8 @@ function KataView:new(layoutWidth, layoutHeight)
 		self.fsm:removeEventListener("onStateMachineStateChanged", self)
 		self.fsm = nil
 		self.vo = nil
+
+		self:removeSelf()
 	end
 
 	view:init()

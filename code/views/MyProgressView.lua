@@ -93,8 +93,10 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	end
 
 	function view:destroy()
-		view.tableView:removeSelf()
-		view.tableView = nil
+		self.tableView:removeSelf()
+		self.tableView = nil
+
+		self:removeSelf()
 	end
 
 	view:init()

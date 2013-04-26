@@ -6,6 +6,7 @@ function KataViewMediator:new()
 	local mediator = Mediator:new()
 
 	function mediator:onRegister()
+		print("KataViewMediator::onRegister")
 		local view = self.viewInstance
 		view:addEventListener("onStartedKata", self)
 		view:addEventListener("onAlreadySuccessful", self)
@@ -18,12 +19,17 @@ function KataViewMediator:new()
 	end
 
 	function mediator:onRemove()
+		print("KataViewMediator::onRemove")
 		local view = self.viewInstance
 		view:removeEventListener("onStartedKata", self)
 		view:removeEventListener("onAlreadySuccessful", self)
 		view:removeEventListener("onKataComplete", self)
 		view:removeEventListener("onKataCompleteConfirmed", self)
+
+		Runtime:removeEventListener("ProgressModel_currentKataChanged", self)
+
 		self.viewInstance:setKata(nil)
+		self.viewInstance = nil
 	end
 
 	function mediator:onStartedKata()
