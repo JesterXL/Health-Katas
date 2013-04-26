@@ -87,7 +87,7 @@ function ProgressModel:new()
 			table.insert(memento.levels, levelMemento)
 			while katas[k] do
 				local kata = katas[k]
-				table.insert(levelMemento.katas, {name=kata.name, complete=kata.complete})
+				table.insert(levelMemento.katas, {name=kata.name, complete=kata.complete, started=kata.started})
 				k = k + 1
 			end
 			i = i + 1
@@ -131,6 +131,7 @@ function ProgressModel:new()
 				local foundKata = self:findKataByName(mKata.name)
 				if foundKata then
 					foundKata.complete = mKata.complete
+					foundKata.started = mKata.started
 				end
 				k = k + 1
 			end
