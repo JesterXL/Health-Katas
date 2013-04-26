@@ -1,13 +1,13 @@
 KataVO = {}
 
-function KataVO:new()
+function KataVO:new(name, question, info, success, alreadyASuccess)
 
 	local vo = {}
-	vo.name = "Default Name"
-	vo.question = "Default question?"
-	vo.info = "Default info."
-	vo.success = "Default success."
-	vo.alreadyASuccess = "Default already a success."
+	vo.name = name
+	vo.question = question
+	vo.info = info
+	vo.success = success
+	vo.alreadyASuccess = alreadyASuccess
 	vo.complete = false
 
 	return vo

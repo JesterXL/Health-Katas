@@ -25,12 +25,19 @@ local function mainSetup()
 	end
 
 	local function testKataView()
+
+		require "views.MainView"
+		local mainView = MainView:new()
+
 		require "vo.KataVO"
 		local vo = KataVO:new()
 		
 
 		require "views.KataView"
-		local view = KataView:new(stage.width, 300)
+		local bounds = mainView:getContentBounds()
+		local view = KataView:new(bounds.width, bounds.height)
+		view.x = bounds.x
+		view.y = bounds.y
 		view:setKata(vo)
 	end
 

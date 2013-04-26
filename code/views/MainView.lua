@@ -57,6 +57,15 @@ function MainView:new()
 		buttonInfo.y = header.y + header.height / 2 - buttonInfo.height / 2
 	end
 
+	function view:getContentBounds()
+		local bounds = {}
+		bounds.x = self.header.x
+		bounds.y = self.header.y + self.header.height
+		bounds.width = self.header.width
+		bounds.height = self.toolbar.y - bounds.y
+		return bounds
+	end
+
 	function view:onBackButtonPressed(e)
 
 	end

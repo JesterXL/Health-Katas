@@ -18,17 +18,29 @@ function KataView:new(layoutWidth, layoutHeight)
 
 	view.fsm = nil
 	view.vo = nil
+	view.COLOR_TEXT = {86, 86, 86, 255}
 
 	function view:init()
+
+		local MARGIN = 16
+		local TEXT_WIDTH = self.layoutWidth - (MARGIN * 2)
+
 		local debugRect = display.newRect(0, 0, self.layoutWidth, self.layoutHeight)
 		debugRect:setFillColor(0, 0, 0, 0)
 		debugRect:setStrokeColor(255, 0, 0)
 		debugRect.strokeWidth = 4
+		self:insert(debugRect)
+		self.debugRect = debugRect
 
 		local field = display.newText("Generic Field.", 0, 0, native.systemFont, 21)
+		--local field = native.newTextBox(0, 0, TEXT_WIDTH, 120)
+		-- field.hasBackground = false
+		-- field.isEditable = false
 		field:setReferencePoint(display.TopLeftReferencePoint)
 		self.field = field
 		self:insert(field)
+		field:setTextColor(unpack(self.COLOR_TEXT))
+		field.align = "center"
 
 		local yesButton = display.newImage("images/button-yes.png")
 		yesButton.classType = "YesButton"
@@ -56,29 +68,33 @@ function KataView:new(layoutWidth, layoutHeight)
 		end
 		noButton:addEventListener("touch", noButton)
 
-		local titleField = display.newText("string", 0, 0, native.systemFont, 28)
+		local titleField = display.newText("string", 0, 0, TEXT_WIDTH, 28, native.systemFont, 28)
 		titleField:setReferencePoint(display.TopLeftReferencePoint)
 		self.titleField = titleField
 		self:insert(titleField)
 		titleField.isVisible = false
+		titleField:setTextColor(unpack(self.COLOR_TEXT))
 
-		local infoField = display.newText("string", 0, 0, native.systemFont, 21)
+		local infoField = display.newText("string", 0, 0, TEXT_WIDTH, 200, native.systemFont, 21)
 		infoField:setReferencePoint(display.TopLeftReferencePoint)
 		self.infoField = infoField
 		self:insert(infoField)
 		infoField.isVisible = false
+		infoField:setTextColor(unpack(self.COLOR_TEXT))
 
-		local motivationLinkField = display.newText("string", 0, 0, native.systemFont, 21)
+		local motivationLinkField = display.newText("string", 0, 0, TEXT_WIDTH, 21, native.systemFont, 21)
 		motivationLinkField:setReferencePoint(display.TopLeftReferencePoint)
 		self.motivationLinkField = motivationLinkField
 		self:insert(motivationLinkField)
 		motivationLinkField.isVisible = false
 		motivationLinkField.text = "I need motivation..."
+		motivationLinkField:setTextColor(0, 0, 255)
 
 		local button = PushButton:new()
 		self.button = button
 		self:insert(button)
 		button.isVisible = false
+		button:addEventListener("onPushButtonTouched", self)
 
 		local fsm = StateMachine:new()
 		fsm:addState("question", {from="*"})
@@ -162,12 +178,58 @@ function KataView:new(layoutWidth, layoutHeight)
 		self:centerX(button)
 
 		local MARGIN = 16
+		titleField.x = MARGIN
 		titleField.y = MARGIN
+		field.x = MARGIN
 		field.y = titleField.y + titleField.height + MARGIN
 		motivationLinkField.y = field.y + field.height + MARGIN
 		button.y = motivationLinkField.y + motivationLinkField.height + MARGIN
+	end
 
+	function view:redrawComplete()
+		local field = self.field
+		local titleField = self.titleField
+		local button = self.button
+		local vo = self.vo
 
+		field.isVisible 		= true
+		titleField.isVisible	= true
+		button.isVisible = true
+		
+
+		field.text = vo.success
+		titleField.text = vo.name
+		button:setLabel("Next Kata")
+
+		self:centerX(titleField)
+		self:centerX(field)
+		self:centerX(button)
+
+		local MARGIN = 16
+		titleField.x = MARGIN
+		titleField.y = MARGIN
+		field.x = MARGIN
+		field.y = titleField.y + titleField.height + MARGIN
+		button.y = field.y + field.height + MARGIN
+	end
+
+	function view:redrawAlready()
+		local field = self.field
+		local button = self.button
+		local vo = self.vo
+
+		field.isVisible 		= true
+		button.isVisible = true
+
+		field.text = vo.alreadyASuccess
+		button:setLabel("Next Kata")
+		
+		self:centerX(button)
+
+		local MARGIN = 16
+		field.x = MARGIN
+		field.y = MARGIN
+		button.y = field.y + field.height + MARGIN
 	end
 
 	function view:center(obj)
@@ -216,6 +278,15 @@ function KataView:new(layoutWidth, layoutHeight)
 
 	function view:onNoButtonTouched()
 		self.fsm:changeState("already")
+	end
+
+	function view:onPushButtonTouched()
+		local state = self.fsm.state
+		if state == "main" then
+			self.fsm:changeState("complete")
+		elseif state == "complete" or state == "already" then
+			self:dispatchEvent({name="onKataCompleteConfirmed"})
+		end
 	end
 
 	view:init()
