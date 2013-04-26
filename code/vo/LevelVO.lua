@@ -7,6 +7,8 @@ function LevelVO:new(name, description, katas)
 	vo.description = description
 	vo.katas = katas
 
+	return vo
+
 end
 
 return LevelVO

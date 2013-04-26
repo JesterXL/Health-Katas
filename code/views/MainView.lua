@@ -1,11 +1,18 @@
 require "views.ToolbarView"
 require "components.BackButton"
+require "views.KataView"
+require "utils.StateMachine"
+require "views.TitleView"
 
 MainView = {}
 
 function MainView:new()
 
 	local view = display.newGroup()
+	view.kataView = nil
+	view.titleView = nil
+
+	view.fsm = nil
 
 	function view:init()
 
@@ -45,7 +52,6 @@ function MainView:new()
 		self:insert(buttonInfo)
 		self.buttonInfo = buttonInfo
 
-
 		logo.x = 20
 		logo.y = 20
 		toolbar.y = stage.height - toolbar.height + 20
@@ -55,6 +61,58 @@ function MainView:new()
 		backButton.isVisible = false
 		buttonInfo.x = self.width - buttonInfo.width * 4
 		buttonInfo.y = header.y + header.height / 2 - buttonInfo.height / 2
+
+		local bounds = self:getContentBounds()
+		local debugRect = display.newRect(bounds.x, bounds.y, bounds.width, bounds.height)
+		debugRect:setFillColor(0, 0, 0, 0)
+		debugRect:setStrokeColor(255, 0, 0)
+		debugRect.strokeWidth = 4
+		self:insert(debugRect)
+		self.debugRect = debugRect
+
+		local fsm = StateMachine:new()
+		fsm:addState("title", {from="*"})
+		fsm:addState("kata", {from="*"})
+		fsm:addState("progress", {from="*"})
+		fsm:addState("motivations", {from="*"})
+		fsm:addState("worldProgress", {from="*"})
+		fsm:addState("about", {from="*"})
+		fsm:setInitialState("title")
+		fsm:addEventListener("onStateMachineStateChanged", self)
+		self.fsm = fsm
+
+		self:redraw()
+
+		Runtime:dispatchEvent({name="onRobotlegsViewCreated", target=self})
+	end
+
+	function view:onStateMachineStateChanged(event)
+		self:redraw()
+	end
+
+	function view:redraw()
+		if self.kataView then
+			self.kataView.isVisible = false
+		end
+
+		if self.titleView then
+			self.titleView.isVisible = false
+		end
+
+		local state = self.fsm.state
+		if state == "title" then
+			self:redrawTitle()
+		elseif state == "kata" then
+			self:redrawKata()
+		elseif state == "progress" then
+			self:redrawProgress()
+		elseif state == "motivations" then
+			self:redrawMotivations()
+		elseif state == "worldProgress" then
+			self:redrawWorldProgress()
+		elseif state == "about" then
+			self:redrawAbout()
+		end
 	end
 
 	function view:getContentBounds()
@@ -66,6 +124,27 @@ function MainView:new()
 		return bounds
 	end
 
+	function view:redrawTitle()
+		if self.titleView == nil then
+			local bounds = self:getContentBounds()
+			self.titleView = TitleView:new(bounds.width, bounds.height)
+			self:insert(self.titleView)
+			self.titleView:addEventListener("onTitleViewStartTouched", self)
+		end
+		
+		self.titleView.y = self.header.y + self.header.height
+	end
+
+	function view:redrawKata()
+		if self.kataView == nil then
+			local bounds = self:getContentBounds()
+			self.kataView = KataView:new(bounds.width, bounds.height)
+			self:insert(self.kataView)
+		end
+
+		self.kataView.y = self.header.y + self.header.height
+	end
+
 	function view:onBackButtonPressed(e)
 
 	end
@@ -73,6 +152,10 @@ function MainView:new()
 	function view:onToolbarButtonPressed(e)
 		local label = e.label
 
+	end
+
+	function view:onTitleViewStartTouched(e)
+		self.fsm:changeState("kata")
 	end
 
 

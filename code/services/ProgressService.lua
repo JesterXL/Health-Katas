@@ -31,12 +31,16 @@ function ProgressService:new()
 
 		-- io.open opens a file at path. returns nil if no file found
 		local file = io.open( path, "r" )
-		contents = file:read( "*a" )
-		io.close( file )	-- close the file after using it
-		if contents == nil then return nil end
-		local json = require "json"
-		local memento = json.decode(contents)
-		return memento
+		if file then
+			contents = file:read( "*a" )
+			io.close( file )	-- close the file after using it
+			if contents == nil then return nil end
+			local json = require "json"
+			local memento = json.decode(contents)
+			return memento
+		else
+			return nil
+		end
 	end
 
 	function service:delete()

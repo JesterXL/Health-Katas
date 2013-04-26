@@ -1,11 +1,14 @@
 require "components.PushButton"
 require "utils.StateMachine"
+require "utils.Layout"
 
 KataView = {}
 
 function KataView:new(layoutWidth, layoutHeight)
 
 	local view = display.newGroup()
+	view.classType = "KataView"
+
 	view.field = nil
 	view.yesButton = nil
 	view.noButton = nil
@@ -105,10 +108,28 @@ function KataView:new(layoutWidth, layoutHeight)
 		fsm:setInitialState("question")
 		fsm:addEventListener("onStateMachineStateChanged", self)
 		self.fsm = fsm
+
+		self:redraw()
+
+		Runtime:dispatchEvent({name="onRobotlegsViewCreated", target=self})
 	end
 
 	function view:setKata(vo)
+		local fsm = self.fsm
 		self.vo = vo
+		if self.vo then
+			if self.vo.complete == true and fsm.state ~= "complete" then
+				fsm:changeStateToAtNextTick("complete")
+				return true
+			elseif self.vo.started == true and fsm.state ~= "main" then
+				fsm:changeStateToAtNextTick("main")
+				return true
+			elseif fsm.state ~= "question" then
+				fsm:changeStateToAtNextTick("question")
+				return true
+			end
+		end
+
 		self:redraw()
 	end
 
@@ -127,6 +148,10 @@ function KataView:new(layoutWidth, layoutHeight)
 		self.infoField.isVisible = false
 		self.motivationLinkField.isVisible = false
 		self.button.isVisible = false
+
+		if self.vo == nil then
+			return false
+		end
 
 		local state = self.fsm.state
 		if state == "question" then
@@ -149,8 +174,8 @@ function KataView:new(layoutWidth, layoutHeight)
 		self.noButton.isVisible 	= true
 
 		self.field.text 			= self.vo.question
-		self:center(self.field)
-		self:centerX(self.yesButton, self.noButton)
+		Layout.center(self.layoutWidth, self.layoutHeight, self.field)
+		Layout.centerX(self.layoutWidth, self.yesButton, self.noButton)
 		self.yesButton.y = self.field.y + self.field.height + 16
 		self.noButton.y = self.yesButton.y
 	end
@@ -172,10 +197,10 @@ function KataView:new(layoutWidth, layoutHeight)
 		titleField.text = vo.name
 		button:setLabel("I Did It!")
 
-		self:centerX(titleField)
-		self:centerX(field)
-		self:centerX(motivationLinkField)
-		self:centerX(button)
+		Layout.centerX(self.layoutWidth, titleField)
+		Layout.centerX(self.layoutWidth, field)
+		Layout.centerX(self.layoutWidth, motivationLinkField)
+		Layout.centerX(self.layoutWidth, button)
 
 		local MARGIN = 16
 		titleField.x = MARGIN
@@ -201,9 +226,9 @@ function KataView:new(layoutWidth, layoutHeight)
 		titleField.text = vo.name
 		button:setLabel("Next Kata")
 
-		self:centerX(titleField)
-		self:centerX(field)
-		self:centerX(button)
+		Layout.centerX(self.layoutWidth, titleField)
+		Layout.centerX(self.layoutWidth, field)
+		Layout.centerX(self.layoutWidth, button)
 
 		local MARGIN = 16
 		titleField.x = MARGIN
@@ -224,7 +249,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		field.text = vo.alreadyASuccess
 		button:setLabel("Next Kata")
 		
-		self:centerX(button)
+		Layout.centerX(self.layoutWidth, button)
 
 		local MARGIN = 16
 		field.x = MARGIN
@@ -232,52 +257,14 @@ function KataView:new(layoutWidth, layoutHeight)
 		button.y = field.y + field.height + MARGIN
 	end
 
-	function view:center(obj)
-		obj.x = layoutWidth / 2 - obj.width / 2
-		obj.y = layoutHeight / 2 - obj.height / 2
-	end
-
-	function view:centerX(...)
-		if #arg == 1 then
-			arg[1].x = self.layoutWidth / 2 - arg[1].width / 2
-		else
-			local w = self.layoutWidth
-			local inc = w / (#arg + 1)
-			for i,v in ipairs(arg) do
-				w = w - v.width
-				local obj = arg[i]
-				obj.x = inc - (obj.width / 2)
-				inc = inc + inc
-			end
-		end
-	end
-
-	function view:centerY(...)
-		if #arg == 1 then
-			arg[1].y = self.layoutHeight / 2 - arg[1].height / 2
-		else
-			local h = self.layoutHeight
-			local inc = h / (#arg + 1)
-
-			for i,v in ipairs(arg) do
-				local obj = arg[i]
-				obj.y = inc - (obj.height / 2)
-				inc = inc + inc
-			end
-		end
-	end
-
-	function view:centerAll(...)
-		self:centerX(arg)
-		self:centerY(arg)
-	end
-
 	function view:onYesButtonTouched()
 		self.fsm:changeState("main")
+		self:dispatchEvent({name="onStartedKata"})
 	end
 
 	function view:onNoButtonTouched()
 		self.fsm:changeState("already")
+		self:dispatchEvent({name="onAlreadySuccessful"})
 	end
 
 	function view:onPushButtonTouched()

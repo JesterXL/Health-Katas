@@ -52,6 +52,12 @@ function ProgressModel:new()
 									"Eat brown rice instead of white race for 1 dish. We suggest using a stove top vs. instant for taste reasons, but whatever is more likely to get you to try it.",
 									"Success!",
 									"Already a success!")
+
+		table.insert(self.levels, level1)
+		table.insert(self.levels, level2)
+
+		self.currentLevel = level1
+		self.currentKata = level1.katas[1]
 	end
 
 	function model:addKata(list, name, question, info, success, alreadyASuccess)
@@ -95,7 +101,7 @@ function ProgressModel:new()
 		if self.levels == nil then
 			error("No levels found, probably called before init.")
 		end
-		
+
 		local service = ProgressService:new()
 		local memento = service:loadProgress()
 		if memento == nil then
@@ -181,7 +187,75 @@ function ProgressModel:new()
 		return nil
 	end
 
+	function model:findIncompleteKata()
+		local levels = self.levels
+		local l = 1
+		while levels[l] do
+			local level = levels[l]
+			local katas = level.katas
+			local k = 1
+			while katas[k] do
+				local kata = katas[k]
+				if kata.complete == false then
+					return kata, level
+				end
+				k = k + 1
+			end
+			i = i + 1
+		end
+		return nil
+	end
 
+	function model:startKata(kataVO)
+		kataVO.started = true
+		Runtime:dispatchEvent({name="ProgressModel_kataStarted"})
+	end
+
+	function model:kataAlreadySuccessful(kataVO)
+		kataVO.complete = true
+		Runtime:dispatchEvent({name="ProgressModel_kataCompleted"})
+	end
+
+	function model:nextKata()
+		local currentKata = self.currentKata
+		local currentLevel = self.currentLevel
+		local kataIndex = table.indexOf(currentLevel.katas, currentKata)
+		kataIndex = kataIndex + 1
+		local nextKata = currentLevel.katas[kataIndex]
+		if nextKata == nil then
+			-- we've gone to a new level
+			local levelIndex = table.indexOf(self.levels, currentLevel)
+			levelIndex = levelIndex + 1
+			local nextLevel = self.levels[levelIndex]
+			if nextLevel == nil then
+				-- we've run out of levels, let's find a kata that hasn't been completed yet
+				local incompleteKata, incompleteKatasLevel = self:findIncompleteKata()
+				if incompleteKata == nil then
+					-- user has completed all kata's
+					Runtime:dispatchEvent({name="ProgressModel_allKatasCompleted"})
+					return true
+				else
+					self.currentLevel = incompleteKatasLevel
+					self.currentKata = incompleteKata
+					Runtime:dispatchEvent({name="ProgressModel_currentKataChanged"})
+					return true
+				end
+			else
+				-- TODO: they COULD have completed katas in this level, check to see if it's
+				-- complete or not
+				self.currentLevel = nextLevel
+				self.currentKata = nextLevel.katas[1]
+				Runtime:dispatchEvent({name="ProgressModel_currentKataChanged"})
+				return true
+			end
+		else
+			self.currentKata = nextKata
+			Runtime:dispatchEvent({name="ProgressModel_currentKataChanged"})
+			return true
+		end
+	end
+
+	model:init()
 
 	return model
 

@@ -9,6 +9,7 @@ function KataVO:new(name, question, info, success, alreadyASuccess)
 	vo.success = success
 	vo.alreadyASuccess = alreadyASuccess
 	vo.complete = false
+	vo.started = false
 
 	return vo
 

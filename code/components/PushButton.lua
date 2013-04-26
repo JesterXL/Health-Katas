@@ -10,18 +10,21 @@ function PushButton:new()
 		self:insert(background)
 		self.background = background
 
-		local field = display.newText("Default", 0, 0, native.systemFont, 21)
+		self:addEventListener("touch", self)
+	end
+
+	function button:setLabel(text)
+		if self.field then
+			self.field:removeSelf()
+			self.field = nil
+		end
+
+		local field = display.newText(text, 0, 0, native.systemFont, 21)
 		field:setTextColor(255, 255, 255)
 		field:setReferencePoint(display.TopLeftReferencePoint)
 		self:insert(field)
 		self.field = field
 
-		self:setLabel("Default")
-
-		self:addEventListener("touch", self)
-	end
-
-	function button:setLabel(text)
 		local field = self.field
 		local background = self.background
 		field.text = text

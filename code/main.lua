@@ -41,11 +41,44 @@ local function mainSetup()
 		view:setKata(vo)
 	end
 
+	local function testLayout()
+		require "utils.Layout"
+		local rect = display.newRect(0, 0, 60, 60)
+		rect:setFillColor(255, 0, 0)
+		rect:setReferencePoint(display.TopLeftReferencePoint)
+
+		local box2 = display.newRect(0, 0, 100, 100)
+		box2:setFillColor(0, 0, 255)
+		box2:setReferencePoint(display.TopLeftReferencePoint)
+
+		-- Layout.centerX(stage.width, rect)
+		-- Layout.centerY(stage.height, rect)
+		--Layout.center(stage.width, stage.height, rect)
+
+		--Layout.centerX(stage.width, rect, box2)
+		-- Layout.centerY(stage.height, rect, box2)
+		--Layout.centerAll(stage.width, stage.height, rect, box2)
+	end
+
+
+	local function testEverything()
+		require "views.MainView"
+		local mainView = MainView:new()
+
+		require "MainContext"
+		local context = MainContext:new()
+		context:startup()
+	end
+
 
 	setupGlobals()
 
 	--testMainView()
-	testKataView()
+	--testKataView()
+	--testLayout()
+
+	testEverything()
+
 end
 
 local function onError(e)
