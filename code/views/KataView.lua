@@ -92,6 +92,13 @@ function KataView:new(layoutWidth, layoutHeight)
 		motivationLinkField.isVisible = false
 		motivationLinkField.text = "I need motivation..."
 		motivationLinkField:setTextColor(0, 0, 255)
+		function motivationLinkField:touch(e)
+			if e.phase == "ended" then
+				view:onShowMotivation()
+				return true
+			end
+		end
+		motivationLinkField:addEventListener("touch", motivationLinkField)
 
 		local button = PushButton:new()
 		self.button = button
@@ -161,7 +168,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		elseif state == "already" then
 			self:redrawAlready()
 		elseif state == "motivation" then
-			self:redrawMotivation()
+			--self:redrawMotivation()
 		elseif state == "complete" then
 			self:redrawComplete()
 		end
@@ -275,6 +282,38 @@ function KataView:new(layoutWidth, layoutHeight)
 		elseif state == "complete" or state == "already" then
 			self:dispatchEvent({name="onKataCompleteConfirmed"})
 		end
+	end
+
+	function view:onShowMotivation()
+		--self.fsm:changeState("motivation")
+		media.playVideo("videos/test.mp4", true, self)
+		--native.newVideo(self.x, self.y, self.layoutWidth, self.layoutHeight)
+	end
+
+	function view:completion(e)
+
+	end
+
+	function view:destroy()
+		
+		Runtime:dispatchEvent({name="onRobotlegsViewDestroyed"})
+
+		self.yesButton:removeEventListener("touch", self.yesButton)
+		self.noButton:removeEventListener("touch", self.noButton)
+		self.motivationLinkField:removeEventListener("touch", self.motivationLinkField)
+
+		self.button:removeEventListener("onPushButtonTouched", self)
+
+		self.field:removeSelf()
+		self.yesButton:removeSelf()
+		self.noButton:removeSelf()
+		self.titleField:removeSelf()
+		self.button:removeSelf()
+		self.motivationLinkField:removeSelf()
+
+		self.fsm:removeEventListener("onStateMachineStateChanged", self)
+		self.fsm = nil
+		self.vo = nil
 	end
 
 	view:init()

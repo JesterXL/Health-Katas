@@ -108,9 +108,6 @@ function ProgressModel:new()
 			return false
 		end
 
-		print("memento.currentLevelName:", memento.currentLevelName)
-		print("memento.currentKataName:", memento.currentKataName)
-
 		if memento.currentLevelName then
 			self.currentLevel = self:findLevelByName(memento.currentLevelName)
 		end
@@ -127,7 +124,6 @@ function ProgressModel:new()
 			local k = 1
 			while mKatas[k] do
 				local mKata = mKatas[k]
-				print(mKata.name, ", complete:", mKata.complete)
 				local foundKata = self:findKataByName(mKata.name)
 				if foundKata then
 					foundKata.complete = mKata.complete

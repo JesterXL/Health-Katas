@@ -3,6 +3,7 @@ require "components.BackButton"
 require "views.KataView"
 require "utils.StateMachine"
 require "views.TitleView"
+require "views.MyProgressView"
 
 MainView = {}
 
@@ -11,6 +12,7 @@ function MainView:new()
 	local view = display.newGroup()
 	view.kataView = nil
 	view.titleView = nil
+	view.myProgressView = nil
 
 	view.fsm = nil
 
@@ -92,11 +94,17 @@ function MainView:new()
 
 	function view:redraw()
 		if self.kataView then
-			self.kataView.isVisible = false
+			self.kataView:destroy()
+			self.kataView = nil
 		end
 
 		if self.titleView then
 			self.titleView.isVisible = false
+		end
+
+		if self.myProgressView then
+			self.myProgressView:destroy()
+			self.myProgressView = nil
 		end
 
 		local state = self.fsm.state
@@ -145,12 +153,28 @@ function MainView:new()
 		self.kataView.y = self.header.y + self.header.height
 	end
 
+	function view:redrawProgress()
+		if self.myProgressView == nil then
+			local bounds = self:getContentBounds()
+			self.myProgressView = MyProgressView:new(bounds.x, bounds.y, bounds.width, bounds.height)
+			self:insert(self.myProgressView)
+			self.myProgressView:toBack()
+			self.background:toBack()
+		end
+	end
+
 	function view:onBackButtonPressed(e)
 
 	end
 
 	function view:onToolbarButtonPressed(e)
 		local label = e.label
+		local fsm = self.fsm
+		if label == "My Progress" then
+			fsm:changeState("progress")
+		elseif label == "Daily Kata" then
+			fsm:changeState("kata")
+		end
 
 	end
 
