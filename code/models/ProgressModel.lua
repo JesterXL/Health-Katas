@@ -108,6 +108,9 @@ function ProgressModel:new()
 			return false
 		end
 
+		print("memento.currentLevelName:", memento.currentLevelName)
+		print("memento.currentKataName:", memento.currentKataName)
+
 		if memento.currentLevelName then
 			self.currentLevel = self:findLevelByName(memento.currentLevelName)
 		end
@@ -124,6 +127,7 @@ function ProgressModel:new()
 			local k = 1
 			while mKatas[k] do
 				local mKata = mKatas[k]
+				print(mKata.name, ", complete:", mKata.complete)
 				local foundKata = self:findKataByName(mKata.name)
 				if foundKata then
 					foundKata.complete = mKata.complete
@@ -208,11 +212,19 @@ function ProgressModel:new()
 
 	function model:startKata(kataVO)
 		kataVO.started = true
+		self:saveState()
 		Runtime:dispatchEvent({name="ProgressModel_kataStarted"})
 	end
 
 	function model:kataAlreadySuccessful(kataVO)
 		kataVO.complete = true
+		self:saveState()
+		Runtime:dispatchEvent({name="ProgressModel_kataCompleted"})
+	end
+
+	function model:kataCompleted(kataVO)
+		kataVO.complete = true
+		self:saveState()
 		Runtime:dispatchEvent({name="ProgressModel_kataCompleted"})
 	end
 
@@ -232,11 +244,13 @@ function ProgressModel:new()
 				local incompleteKata, incompleteKatasLevel = self:findIncompleteKata()
 				if incompleteKata == nil then
 					-- user has completed all kata's
+					self:saveState()
 					Runtime:dispatchEvent({name="ProgressModel_allKatasCompleted"})
 					return true
 				else
 					self.currentLevel = incompleteKatasLevel
 					self.currentKata = incompleteKata
+					self:saveState()
 					Runtime:dispatchEvent({name="ProgressModel_currentKataChanged"})
 					return true
 				end
@@ -245,11 +259,13 @@ function ProgressModel:new()
 				-- complete or not
 				self.currentLevel = nextLevel
 				self.currentKata = nextLevel.katas[1]
+				self:saveState()
 				Runtime:dispatchEvent({name="ProgressModel_currentKataChanged"})
 				return true
 			end
 		else
 			self.currentKata = nextKata
+			self:saveState()
 			Runtime:dispatchEvent({name="ProgressModel_currentKataChanged"})
 			return true
 		end

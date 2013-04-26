@@ -271,6 +271,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		local state = self.fsm.state
 		if state == "main" then
 			self.fsm:changeState("complete")
+			self:dispatchEvent({name="onKataComplete"})
 		elseif state == "complete" or state == "already" then
 			self:dispatchEvent({name="onKataCompleteConfirmed"})
 		end

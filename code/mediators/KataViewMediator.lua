@@ -9,6 +9,7 @@ function KataViewMediator:new()
 		local view = self.viewInstance
 		view:addEventListener("onStartedKata", self)
 		view:addEventListener("onAlreadySuccessful", self)
+		view:addEventListener("onKataComplete", self)
 		view:addEventListener("onKataCompleteConfirmed", self)
 
 		Runtime:addEventListener("ProgressModel_currentKataChanged", self)
@@ -20,6 +21,7 @@ function KataViewMediator:new()
 		local view = self.viewInstance
 		view:removeEventListener("onStartedKata", self)
 		view:removeEventListener("onAlreadySuccessful", self)
+		view:removeEventListener("onKataComplete", self)
 		view:removeEventListener("onKataCompleteConfirmed", self)
 		self.viewInstance:setKata(nil)
 	end
@@ -30,6 +32,10 @@ function KataViewMediator:new()
 
 	function mediator:onAlreadySuccessful()
 		gProgressModel:kataAlreadySuccessful(self.viewInstance.vo)
+	end
+
+	function mediator:onKataComplete()
+		gProgressModel:kataCompleted(self.viewInstance.vo)
 	end
 
 	function mediator:onKataCompleteConfirmed()
