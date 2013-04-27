@@ -77,7 +77,6 @@ function ProgressModel:new()
 		memento.levels = {}
 
 		local i = 1
-		local k = 1
 		local levels = self.levels
 		while levels[i] do
 			local level = levels[i]
@@ -85,6 +84,7 @@ function ProgressModel:new()
 			local levelMemento = {}
 			levelMemento.katas = {}
 			table.insert(memento.levels, levelMemento)
+			local k = 1
 			while katas[k] do
 				local kata = katas[k]
 				table.insert(levelMemento.katas, {name=kata.name, complete=kata.complete, started=kata.started})
