@@ -50,8 +50,8 @@ function ToolbarView:new()
 		function button:touch(e)
 			if e.phase == "ended" then
 				view:onButtonPressed(self, label)
-				return true
 			end
+			return true
 		end
 		button:addEventListener("touch", button)
 

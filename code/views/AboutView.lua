@@ -44,7 +44,8 @@ function AboutView:new(layoutWidth, layoutHeight)
 		    width = self.layoutWidth,
 		    height = self.layoutHeight - self.y,
 		    scrollWidth = self.layoutWidth,
-		    scrollHeight = self.layoutHeight
+		    scrollHeight = self.layoutHeight,
+		    maskFile = "/images/about/about-scroll-mask.png"
 		}
 		self.scrollView = scrollView
 		self:insert(scrollView)
