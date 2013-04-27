@@ -14,6 +14,15 @@ local function mainSetup()
 		--_G._ = require "utils.underscore"
 	end
 
+	function showProps(o)
+		print("-- showProps --")
+		print("o: ", o)
+		for key,value in pairs(o) do
+			print("key: ", key, ", value: ", value);
+		end
+		print("-- end showProps --")
+	end
+
 	local function testMainView()
 		require "views.MainView"
 		local mainView = MainView:new()

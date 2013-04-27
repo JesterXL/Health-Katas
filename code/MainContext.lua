@@ -16,6 +16,9 @@ function MainContext:new()
 
 		self:mapMediator("views.KataView", 
 							"mediators.KataViewMediator")
+
+		self:mapMediator("views.MyProgressView", 
+							"mediators.MyProgressViewMediator")
 		
 		Runtime:dispatchEvent({name="onApplicationStartup"})
 	end

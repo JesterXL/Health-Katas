@@ -7,7 +7,7 @@ function StartupCommand:new()
 	local command = {}
 
 	function command:execute()
-		print("StartupCommand::execute")
+		--print("StartupCommand::execute")
 		local progressModel = ProgressModel:new()
 		progressModel:loadState()
 		_G.gProgressModel = progressModel
