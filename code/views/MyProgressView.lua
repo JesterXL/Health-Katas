@@ -62,7 +62,7 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	function view:tableViewListener( event )
 	    local phase = event.phase
 
-	    print("tableViewListener:", event.phase )
+	    print("tableViewListener:", event.phase)
 	end
 
 	-- Handle row rendering

@@ -4,6 +4,7 @@ require "views.KataView"
 require "utils.StateMachine"
 require "views.TitleView"
 require "views.MyProgressView"
+require "views.AboutView"
 
 MainView = {}
 
@@ -13,6 +14,7 @@ function MainView:new()
 	view.kataView = nil
 	view.titleView = nil
 	view.myProgressView = nil
+	view.aboutView = nil
 
 	view.fsm = nil
 
@@ -107,6 +109,11 @@ function MainView:new()
 			self.myProgressView = nil
 		end
 
+		if self.aboutView then
+			self.aboutView:destroy()
+			self.aboutView = nil
+		end
+
 		local state = self.fsm.state
 		if state == "title" then
 			self:redrawTitle()
@@ -163,6 +170,17 @@ function MainView:new()
 		end
 	end
 
+	function view:redrawAbout()
+		if self.aboutView == nil then
+			local bounds = self:getContentBounds()
+			self.aboutView = AboutView:new(bounds.width, bounds.height)
+			self:insert(self.aboutView)
+			self.aboutView:toBack()
+			self.background:toBack()
+		end
+		self.aboutView.y = self.header.y + self.header.height
+	end
+
 	function view:onBackButtonPressed(e)
 
 	end
@@ -174,6 +192,8 @@ function MainView:new()
 			fsm:changeState("progress")
 		elseif label == "Daily Kata" then
 			fsm:changeState("kata")
+		elseif label == "About" then
+			fsm:changeState("about")
 		end
 
 	end
