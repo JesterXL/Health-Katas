@@ -17,6 +17,8 @@ function KataView:new(layoutWidth, layoutHeight)
 	view.button = nil
 	view.motivationLinkField = nil
 
+	
+	view.MARGIN		= 16
 	view.layoutWidth = layoutWidth
 	view.layoutHeight = layoutHeight
 
@@ -28,7 +30,7 @@ function KataView:new(layoutWidth, layoutHeight)
 
 	function view:init()
 
-		local MARGIN = 16
+		local MARGIN = view.MARGIN
 		local TEXT_WIDTH = self.layoutWidth - (MARGIN * 2)
 
 		local debugRect = display.newRect(0, 0, self.layoutWidth, self.layoutHeight)
@@ -93,12 +95,13 @@ function KataView:new(layoutWidth, layoutHeight)
 		infoField.isVisible = false
 		infoField:setTextColor(unpack(self.COLOR_TEXT))
 
-		local motivationLinkField = display.newText("string", 0, 0, TEXT_WIDTH, 21, native.systemFont, self.SIZE_TEXT)
-		motivationLinkField:setReferencePoint(display.TopLeftReferencePoint)
+		--local motivationLinkField = display.newText("string", 0, 0, TEXT_WIDTH, 21, native.systemFont, self.SIZE_TEXT)
+		local motivationLinkField = AutoSizeText:new()
+		motivationLinkField:setFontSize(self.SIZE_TEXT)
 		self.motivationLinkField = motivationLinkField
 		self:insert(motivationLinkField)
 		motivationLinkField.isVisible = false
-		motivationLinkField.text = "I need motivation..."
+		motivationLinkField:setText("I need motivation...")
 		motivationLinkField:setTextColor(0, 0, 255)
 		function motivationLinkField:touch(e)
 			if e.phase == "ended" then
@@ -184,15 +187,22 @@ function KataView:new(layoutWidth, layoutHeight)
 	end
 
 	function view:redrawQuestion()
-		self.field.isVisible 		= true
+		local field = self.field
+		field.isVisible 		= true
 		self.yesButton.isVisible 	= true
 		self.noButton.isVisible 	= true
 
-		self.field:setText(self.vo.question)
-		self.field.y = 16
-		Layout.centerX(self.layoutWidth, self.field)
+		local MARGIN = view.MARGIN
+		local MARGIN2 = MARGIN * 2
+
+		field:setAutoSize(true)
+		field:setSize(self.layoutWidth - MARGIN2, 0)
+		field:setText(self.vo.question)
+
+		field.y = MARGIN
+		Layout.centerX(self.layoutWidth, field)
 		Layout.centerX(self.layoutWidth, self.yesButton, self.noButton)
-		self.yesButton.y = self.field.y + self.field.height + 16
+		self.yesButton.y = field.y + field.height + MARGIN2
 		self.noButton.y = self.yesButton.y
 	end
 
@@ -208,7 +218,9 @@ function KataView:new(layoutWidth, layoutHeight)
 		motivationLinkField.isVisible = true
 		button.isVisible = true
 		
-		field:setSize(self.layoutWidth, 0)
+		local MARGIN = view.MARGIN
+		local MARGIN2 = MARGIN * 2
+		field:setSize(self.layoutWidth - MARGIN2, 0)
 		field:setAutoSize(true)
 		field:setText(vo.info)
 		titleField:setText(vo.name)
@@ -219,13 +231,13 @@ function KataView:new(layoutWidth, layoutHeight)
 		Layout.centerX(self.layoutWidth, motivationLinkField)
 		Layout.centerX(self.layoutWidth, button)
 
-		local MARGIN = 16
+		
 		titleField.x = MARGIN
 		titleField.y = MARGIN
 		field.x = MARGIN
 		field.y = titleField.y + titleField.height + MARGIN
-		motivationLinkField.y = field.y + field.height + MARGIN
-		button.y = motivationLinkField.y + motivationLinkField.height + MARGIN
+		motivationLinkField.y = field.y + field.height + (MARGIN * 2)
+		button.y = motivationLinkField.y + motivationLinkField.height + (MARGIN * 2)
 	end
 
 	function view:redrawComplete()
@@ -263,7 +275,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		field.isVisible 		= true
 		button.isVisible = true
 
-		field.text = vo.alreadyASuccess
+		field:setText(vo.alreadyASuccess)
 		button:setLabel("Next Kata")
 		
 		Layout.centerX(self.layoutWidth, button)

@@ -1,4 +1,4 @@
-
+require "components.AutoSizeText"
 require "services.LoadTextService"
 local widget = require "widget"
 
@@ -15,6 +15,7 @@ function AboutView:new(layoutWidth, layoutHeight)
 	view.URL_TWITTER 			= "http://twitter.com/jesterxl"
 	view.layoutWidth 			= layoutWidth
 	view.layoutHeight			= layoutHeight
+	view.COLOR_TEXT 			= {86, 86, 86, 255}
 
 	view.scrollView 			= nil
 	view.whatTitleField			= nil
@@ -36,6 +37,9 @@ function AboutView:new(layoutWidth, layoutHeight)
 
 		local MARGIN			= 32
 		local startY 			= MARGIN
+		local SIZE_TEXT_TITLE 		= 31
+		local SIZE_TEXT 			= 21
+		local textWidth 		= layoutWidth - (MARGIN * 2)
 
 		local scrollView = widget.newScrollView
 		{
@@ -50,19 +54,19 @@ function AboutView:new(layoutWidth, layoutHeight)
 		self.scrollView = scrollView
 		self:insert(scrollView)
 
-		self.whatTitleField 		= self:getField("What", MARGIN, startY, layoutWidth, 21, 21, true)
+		self.whatTitleField 		= self:getField("What", MARGIN, startY, textWidth, 0, SIZE_TEXT_TITLE, true)
 		startY = self.whatTitleField.y + self.whatTitleField.height + (MARGIN / 2)
-		self.whatField 			= self:getField({path = "assets/text/about-what.txt"}, MARGIN, startY, layoutWidth, 136, 18)	
+		self.whatField 			= self:getField({path = "assets/text/about-what.txt"}, MARGIN, startY, textWidth, 0, SIZE_TEXT)	
 
-		startY = self.whatField.y + self.whatField.height
-		self.whyTitleField 		= self:getField("Why", MARGIN, startY, layoutWidth, 21, 21, true)
+		startY = self.whatField.y + self.whatField.height + MARGIN
+		self.whyTitleField 		= self:getField("Why", MARGIN, startY, textWidth, 0, SIZE_TEXT_TITLE, true)
 
 		startY = self.whyTitleField.y + self.whyTitleField.height + (MARGIN / 2)
-		self.whyField 			= self:getField({path="assets/text/about-why.txt"}, MARGIN, startY, layoutWidth, 376, 18)
+		self.whyField 			= self:getField({path="assets/text/about-why.txt"}, MARGIN, startY, textWidth, 0, SIZE_TEXT)
 		
-		startY = self.whyField.y + self.whyField.height
+		startY = self.whyField.y + self.whyField.height + MARGIN
 
-		self.whoTitleField 		= self:getField("Who", MARGIN, startY, layoutWidth, 21, 21, true)
+		self.whoTitleField 		= self:getField("Who", MARGIN, startY, textWidth, 0, SIZE_TEXT_TITLE, true)
 		startY = self.whoTitleField.y + self.whoTitleField.height + (MARGIN / 2)
 
 		local tweenDelay				= 700
@@ -101,18 +105,9 @@ function AboutView:new(layoutWidth, layoutHeight)
 	function view:getField(text, x, y, width, height, fontSize, isBold)
 		if isBold == nil then
 			isBold = false
-
 		end
 
 		local platform = system.getInfo("platformName")
-		local fieldoutvi
-
-		local fontToUse
-		if isBold == true then
-			fontToUse = native.systemFontBold
-		else
-			fontToUse = native.systemFont
-		end
 
 		local initialText
 		if type(text) == "string" then
@@ -121,19 +116,13 @@ function AboutView:new(layoutWidth, layoutHeight)
 			initialText = LoadTextService:new():loadTextFile(text.path)
 		end
 
-		if platform == "Android" or platform == "iPhone OS" then
-			field = native.newTextBox(0, 0, width, height )
-			field.hasBackground = false
-			field.isEditable = false
-			field.align = "left"
-			field.size = fontSize
-			field.font = native.newFont(fontToUse, fontSize)
-			field.text = initialText
-		else
-			field = display.newText(initialText, 0, 0, width, height, fontToUse, fontSize)
-		end
-		field:setReferencePoint(display.TopLeftReferencePoint)
-		field:setTextColor(0, 0, 0)
+		field = AutoSizeText:new()
+		field:setFontSize(fontSize)
+		field:setText(initialText)
+		field:setBold(isBold)
+		field:setTextColor(unpack(view.COLOR_TEXT))
+		field:setSize(width, height)
+		field:setAutoSize(true)
 		self.scrollView:insert(field)
 		field.x = x
 		field.y = y

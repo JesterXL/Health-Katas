@@ -73,6 +73,7 @@ function MainView:new()
 		debugRect.strokeWidth = 4
 		self:insert(debugRect)
 		self.debugRect = debugRect
+		debugRect.isVisible = false
 
 		local fsm = StateMachine:new()
 		fsm:addState("title", {from="*"})

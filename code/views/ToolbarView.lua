@@ -22,10 +22,12 @@ function ToolbarView:new()
 		local buttonMotivations = self:getButton(nil, "images/icon-motivation.png", "Motivations")
 		self.buttonMotivations = buttonMotivations
 		buttonMotivations.x = buttonMyProgress.x + buttonMyProgress.width
+		buttonMotivations.isVisible = false
 
 		local buttonWorldProgress = self:getButton(nil, "images/icon-graph.png", "World Progress")
 		self.buttonWorldProgress = buttonWorldProgress
 		buttonWorldProgress.x = buttonDailyKata.x + buttonDailyKata.width
+		buttonWorldProgress.isVisible = false
 
 		local buttonAbout = self:getButton(nil, "images/icon-jxl.png", "About")
 		self.buttonAbout = buttonAbout

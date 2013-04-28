@@ -13,7 +13,7 @@ function PushButton:new()
 
 		local field = AutoSizeText:new()
 		field:setTextColor(255, 255, 255)
-		field:setFontSize(21)
+		field:setFontSize(28)
 		self:insert(field)
 		self.field = field
 
@@ -26,6 +26,7 @@ function PushButton:new()
 		field:setText(text)
 		field.x = background.x + background.width / 2 - field.width / 2
 		field.y = background.y + background.height / 2 - field.height / 2
+		field.y = field.y - 4
 	end
 
 	function button:touch(event)
