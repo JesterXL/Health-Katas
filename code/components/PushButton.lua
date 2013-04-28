@@ -1,3 +1,4 @@
+require "components.AutoSizeText"
 PushButton = {}
 
 function PushButton:new()
@@ -10,24 +11,19 @@ function PushButton:new()
 		self:insert(background)
 		self.background = background
 
+		local field = AutoSizeText:new()
+		field:setTextColor(255, 255, 255)
+		field:setFontSize(21)
+		self:insert(field)
+		self.field = field
+
 		self:addEventListener("touch", self)
 	end
 
 	function button:setLabel(text)
-		if self.field then
-			self.field:removeSelf()
-			self.field = nil
-		end
-
-		local field = display.newText(text, 0, 0, native.systemFont, 21)
-		field:setTextColor(255, 255, 255)
-		field:setReferencePoint(display.TopLeftReferencePoint)
-		self:insert(field)
-		self.field = field
-
 		local field = self.field
 		local background = self.background
-		field.text = text
+		field:setText(text)
 		field.x = background.x + background.width / 2 - field.width / 2
 		field.y = background.y + background.height / 2 - field.height / 2
 	end

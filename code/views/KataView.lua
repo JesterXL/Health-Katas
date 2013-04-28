@@ -1,6 +1,7 @@
 require "components.PushButton"
 require "utils.StateMachine"
 require "utils.Layout"
+require "components.AutoSizeText"
 
 KataView = {}
 
@@ -22,6 +23,8 @@ function KataView:new(layoutWidth, layoutHeight)
 	view.fsm = nil
 	view.vo = nil
 	view.COLOR_TEXT = {86, 86, 86, 255}
+	view.SIZE_TITLE_TEXT = 36
+	view.SIZE_TEXT = 28
 
 	function view:init()
 
@@ -35,15 +38,16 @@ function KataView:new(layoutWidth, layoutHeight)
 		self:insert(debugRect)
 		self.debugRect = debugRect
 
-		local field = display.newText("Generic Field.", 0, 0, native.systemFont, 21)
+		--local field = display.newText("Generic Field.", 0, 0, native.systemFont, 21)
+		local field = AutoSizeText:new()
+		field:setText("Generic Field")
+		field:setFontSize(self.SIZE_TITLE_TEXT)
 		--local field = native.newTextBox(0, 0, TEXT_WIDTH, 120)
 		-- field.hasBackground = false
 		-- field.isEditable = false
-		field:setReferencePoint(display.TopLeftReferencePoint)
 		self.field = field
 		self:insert(field)
 		field:setTextColor(unpack(self.COLOR_TEXT))
-		field.align = "center"
 
 		local yesButton = display.newImage("images/button-yes.png")
 		yesButton.classType = "YesButton"
@@ -71,21 +75,21 @@ function KataView:new(layoutWidth, layoutHeight)
 		end
 		noButton:addEventListener("touch", noButton)
 
-		local titleField = display.newText("string", 0, 0, TEXT_WIDTH, 28, native.systemFont, 28)
+		local titleField = display.newText("string", 0, 0, TEXT_WIDTH, 28, native.systemFont, self.SIZE_TITLE_TEXT)
 		titleField:setReferencePoint(display.TopLeftReferencePoint)
 		self.titleField = titleField
 		self:insert(titleField)
 		titleField.isVisible = false
 		titleField:setTextColor(unpack(self.COLOR_TEXT))
 
-		local infoField = display.newText("string", 0, 0, TEXT_WIDTH, 200, native.systemFont, 21)
+		local infoField = display.newText("string", 0, 0, TEXT_WIDTH, 200, native.systemFont, self.SIZE_TEXT)
 		infoField:setReferencePoint(display.TopLeftReferencePoint)
 		self.infoField = infoField
 		self:insert(infoField)
 		infoField.isVisible = false
 		infoField:setTextColor(unpack(self.COLOR_TEXT))
 
-		local motivationLinkField = display.newText("string", 0, 0, TEXT_WIDTH, 21, native.systemFont, 21)
+		local motivationLinkField = display.newText("string", 0, 0, TEXT_WIDTH, 21, native.systemFont, self.SIZE_TEXT)
 		motivationLinkField:setReferencePoint(display.TopLeftReferencePoint)
 		self.motivationLinkField = motivationLinkField
 		self:insert(motivationLinkField)
@@ -180,8 +184,9 @@ function KataView:new(layoutWidth, layoutHeight)
 		self.yesButton.isVisible 	= true
 		self.noButton.isVisible 	= true
 
-		self.field.text 			= self.vo.question
-		Layout.center(self.layoutWidth, self.layoutHeight, self.field)
+		self.field:setText(self.vo.question)
+		self.field.y = 16
+		Layout.centerX(self.layoutWidth, self.field)
 		Layout.centerX(self.layoutWidth, self.yesButton, self.noButton)
 		self.yesButton.y = self.field.y + self.field.height + 16
 		self.noButton.y = self.yesButton.y
@@ -200,7 +205,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		button.isVisible = true
 		
 
-		field.text = vo.info
+		field:setText(vo.info)
 		titleField.text = vo.name
 		button:setLabel("I Did It!")
 
@@ -229,7 +234,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		button.isVisible = true
 		
 
-		field.text = vo.success
+		field:setText(vo.success)
 		titleField.text = vo.name
 		button:setLabel("Next Kata")
 
