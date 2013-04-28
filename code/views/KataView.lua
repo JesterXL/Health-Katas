@@ -75,7 +75,6 @@ function KataView:new(layoutWidth, layoutHeight)
 		end
 		noButton:addEventListener("touch", noButton)
 
-		--local titleField = display.newText("string", 0, 0, TEXT_WIDTH, 28, native.systemFont, self.SIZE_TITLE_TEXT)
 		local titleField = AutoSizeText:new()
 		titleField:setText("string")
 		titleField:setSize(TEXT_WIDTH, 0)
