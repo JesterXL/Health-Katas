@@ -97,6 +97,10 @@ local function mainSetup()
 		field:setReferencePoint(display.TopLeftReferencePoint)
 		print(field.width, field.contentWidth)
 		field.x = 0
+
+
+		local first = display.newText("More text that is quite long, and yet not so much more than a side breaker.", 0, 0, stage.width, 0, native.systemFont, 21)
+		print("first:", first.height, first.height)
 	end
 
 	local function testMagicTextField()

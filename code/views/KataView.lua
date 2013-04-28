@@ -41,7 +41,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		--local field = display.newText("Generic Field.", 0, 0, native.systemFont, 21)
 		local field = AutoSizeText:new()
 		field:setText("Generic Field")
-		field:setFontSize(self.SIZE_TITLE_TEXT)
+		field:setFontSize(self.SIZE_TEXT)
 		--local field = native.newTextBox(0, 0, TEXT_WIDTH, 120)
 		-- field.hasBackground = false
 		-- field.isEditable = false
@@ -75,8 +75,13 @@ function KataView:new(layoutWidth, layoutHeight)
 		end
 		noButton:addEventListener("touch", noButton)
 
-		local titleField = display.newText("string", 0, 0, TEXT_WIDTH, 28, native.systemFont, self.SIZE_TITLE_TEXT)
-		titleField:setReferencePoint(display.TopLeftReferencePoint)
+		--local titleField = display.newText("string", 0, 0, TEXT_WIDTH, 28, native.systemFont, self.SIZE_TITLE_TEXT)
+		local titleField = AutoSizeText:new()
+		titleField:setText("string")
+		titleField:setSize(TEXT_WIDTH, 0)
+		titleField:setAutoSize(false)
+		titleField:setFontSize(self.SIZE_TITLE_TEXT)
+		titleField:setBold(true)
 		self.titleField = titleField
 		self:insert(titleField)
 		titleField.isVisible = false
@@ -204,9 +209,10 @@ function KataView:new(layoutWidth, layoutHeight)
 		motivationLinkField.isVisible = true
 		button.isVisible = true
 		
-
+		field:setSize(self.layoutWidth, 0)
+		field:setAutoSize(true)
 		field:setText(vo.info)
-		titleField.text = vo.name
+		titleField:setText(vo.name)
 		button:setLabel("I Did It!")
 
 		Layout.centerX(self.layoutWidth, titleField)
@@ -235,7 +241,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		
 
 		field:setText(vo.success)
-		titleField.text = vo.name
+		titleField:setText(vo.name)
 		button:setLabel("Next Kata")
 
 		Layout.centerX(self.layoutWidth, titleField)
