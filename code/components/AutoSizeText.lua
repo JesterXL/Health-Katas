@@ -40,7 +40,7 @@ function AutoSizeText:new()
 		end
 		
 		if self._autoSize == false then
-			field = display.newText(str, 0, 0, native.systemFont, self._fontSize)
+			field = display.newText(str, 0, 0, fontName, self._fontSize)
 		else
 			field = display.newText(str, 0, 0, self._width, self._height, fontName, self._fontSize)
 		end

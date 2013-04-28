@@ -9,6 +9,7 @@ function TitleView:new(layoutWidth, layoutHeight)
 	view.layoutHeight = layoutHeight
 
 	function view:init()
+		--display.newText("string", x, y, font, size)
 		local field = display.newText("Simple eating tips to be a healthier person.", 0, 0, native.systemFont, 28)
 		--local field = native.newTextBox(0, 0, TEXT_WIDTH, 120)
 		-- field.hasBackground = false
@@ -19,7 +20,7 @@ function TitleView:new(layoutWidth, layoutHeight)
 		field:setTextColor(unpack(self.COLOR_TEXT))
 		field.align = "center"
 
-		local titleField = display.newText("Health Katas", 0, 0, TEXT_WIDTH, 36, native.systemFontBold, 28)
+		local titleField = display.newText("Health Katas", 0, 0, TEXT_WIDTH, 36, native.systemFontBold, 36)
 		titleField:setReferencePoint(display.TopLeftReferencePoint)
 		self.titleField = titleField
 		self:insert(titleField)

@@ -1,3 +1,5 @@
+require "views.SingleKataView"
+
 local widget = require( "widget" )
 MyProgressView = {}
 
@@ -6,12 +8,15 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	view.classType = "MyProgressView"
 	view.startX = startX
 	view.startY = startY
+	view.x = startX
+	view.y = startY
 	view.layoutWidth = layoutWidth
 	view.layoutHeight = layoutHeight
 
 	view.tableView = tableView
 	view.katasHash = nil
 	view.levelsHash = nil
+	view.singleKataView = nil
 
 
 	function view:init()
@@ -85,8 +90,14 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	function view:onRowTouch( event )
 	    local phase = event.phase
 
-	    if "press" == phase then
-	        print( "Touched row:", event.target.index )
+	    if phase == "tap" or phase == "release" then
+	       	local index = event.target.index
+	       	local key = tostring(index)
+	   		local kata = self.katasHash[key]
+	   		if kata then
+	   			self:showSingleKata(kata)
+	   		end
+	   		return true
 	    end
 	end
 
@@ -117,7 +128,7 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 
 		local tableView = widget.newTableView
 		{
-		    top = self.startY,
+		    top = 0,
 		    width = self.layoutWidth, 
 		    height = self.layoutHeight - self.startY,
 		    listener = function(e)
@@ -176,6 +187,28 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 		end
 	end
 
+	function view:destroySingleKataView()
+		if self.singleKataView then
+			self.singleKataView:destroy()
+			self.singleKataView = nil
+		end
+	end
+
+	function view:showSingleKata(kata)
+		self:destroySingleKataView()
+
+		if kata then
+			self.singleKataView = SingleKataView:new(self.layoutWidth, self.layoutHeight)
+			self:insert(self.singleKataView)
+			self.singleKataView:setKata(kata)
+			self.singleKataView:addEventListener("onCloseSingleKataView", self)
+		end
+	end
+
+	function view:onCloseSingleKataView(event)
+		self:destroySingleKataView()
+	end
+
 
 	function view:destroy()
 
@@ -185,6 +218,8 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 			self.tableView:removeSelf()
 			self.tableView = nil
 		end
+
+		self:destroySingleKataView()
 
 		self:removeSelf()
 	end

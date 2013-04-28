@@ -37,8 +37,8 @@ function AboutView:new(layoutWidth, layoutHeight)
 
 		local MARGIN			= 32
 		local startY 			= MARGIN
-		local SIZE_TEXT_TITLE 		= 31
-		local SIZE_TEXT 			= 21
+		local SIZE_TEXT_TITLE 		= 36
+		local SIZE_TEXT 			= 28
 		local textWidth 		= layoutWidth - (MARGIN * 2)
 
 		local scrollView = widget.newScrollView
@@ -99,7 +99,7 @@ function AboutView:new(layoutWidth, layoutHeight)
 		sizeRect.y = startY
 		self.scrollView:insert(sizeRect)
 		self.sizeRect = sizeRect
-		
+		sizeRect.isVisible = false
 	end
 
 	function view:getField(text, x, y, width, height, fontSize, isBold)
