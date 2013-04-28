@@ -168,7 +168,6 @@ local function mainSetup()
 
 
 
-
 	setupGlobals()
 
 	--testMainView()
