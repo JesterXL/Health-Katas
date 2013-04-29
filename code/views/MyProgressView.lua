@@ -12,6 +12,7 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	view.y = startY
 	view.layoutWidth = layoutWidth
 	view.layoutHeight = layoutHeight
+	view.COLOR_TEXT 			= {86, 86, 86, 255}
 
 	view.tableView = tableView
 	view.katasHash = nil
@@ -58,18 +59,18 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	    	end
 	    end
 
-	    local rowTitle = display.newText(row, textForRow, 0, 0, native.systemFont, 18)
+	    local rowTitle = display.newText(row, textForRow, 0, 0, native.systemFont, 28)
 	    rowTitle.x = row.x - ( row.contentWidth * 0.5 ) + ( rowTitle.contentWidth * 0.5 )
 	    rowTitle.x = rowTitle.x + 16
 	    rowTitle.y = row.contentHeight * 0.5
-	    rowTitle:setTextColor( 0, 0, 0 )
+	    rowTitle:setTextColor(unpack(view.COLOR_TEXT))
 
 	    local completeField
 	   	if completeText == "" or completeText == nil then
 	   		return true
 	   	end
 
-	   	completeField = display.newText(row, completeText, 0, 0, native.systemFontBold, 18)
+	   	completeField = display.newText(row, completeText, 0, 0, native.systemFontBold, 36)
 	   	if completeText == "Complete!" then
 	   		completeField:setTextColor(0, 255, 0)
 	   	else

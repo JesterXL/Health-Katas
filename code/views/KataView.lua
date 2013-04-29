@@ -39,6 +39,7 @@ function KataView:new(layoutWidth, layoutHeight)
 		debugRect.strokeWidth = 4
 		self:insert(debugRect)
 		self.debugRect = debugRect
+		debugRect.isVisible = false
 
 		--local field = display.newText("Generic Field.", 0, 0, native.systemFont, 21)
 		local field = AutoSizeText:new()

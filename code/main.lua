@@ -74,6 +74,12 @@ local function mainSetup()
 
 
 	local function testEverything()
+		local mask = graphics.newMask("images/mask.png")
+		--mask:setReferencePoint(display.TopLeftReferencePoint)
+		stage:setMask(mask)
+		stage.maskX = 318
+		stage.maskY = 478
+
 		require "services.ProgressService"
 		local service = ProgressService:new()
 		service:delete()
@@ -84,6 +90,8 @@ local function mainSetup()
 		require "MainContext"
 		local context = MainContext:new()
 		context:startup()
+
+
 
 		
 	end
