@@ -89,7 +89,9 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	-- Handle touches on the row
 	function view:onRowTouch( event )
 	    local phase = event.phase
-
+	    if self.singleKataView then
+	    	return true
+	    end
 	    if phase == "tap" or phase == "release" then
 	       	local index = event.target.index
 	       	local key = tostring(index)
@@ -187,8 +189,16 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 		end
 	end
 
+	function view:destroySingleKataViewTween()
+		if self.singleKataView and self.singleKataView.tween then
+			transition.cancel(self.singleKataView.tween)
+			self.singleKataView.tween = nil
+		end
+	end
+
 	function view:destroySingleKataView()
 		if self.singleKataView then
+			self:destroySingleKataViewTween()
 			self.singleKataView:destroy()
 			self.singleKataView = nil
 		end
@@ -202,11 +212,23 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 			self:insert(self.singleKataView)
 			self.singleKataView:setKata(kata)
 			self.singleKataView:addEventListener("onCloseSingleKataView", self)
+			self.singleKataView.alpha = 0
+			self.singleKataView.y = self.layoutHeight
+			local targetY = 0
+			self.singleKataView.tween = transition.to(self.singleKataView, {time = 500, alpha = 1, y = targetY, transition=easing.outExpo, onComplete=self})
 		end
+	end
+
+	function view:onComplete(e)
+		self.tableView.isVisible = false
 	end
 
 	function view:onCloseSingleKataView(event)
 		self:destroySingleKataView()
+		local func = function()
+			view.tableView.isVisible = true
+		end
+		timer.performWithDelay(100, func)
 	end
 
 

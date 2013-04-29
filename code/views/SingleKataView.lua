@@ -27,6 +27,14 @@ function SingleKataView:new(layoutWidth, layoutHeight)
 		local background = display.newRect(self, 0, 0, layoutWidth, layoutHeight)
 		self.background = background
 		background:setFillColor(255, 255, 255)
+		function background:touch(e)
+			return true
+		end
+		function background:tap(e)
+			return true
+		end
+		background:addEventListener("touch", background)
+		background:addEventListener("tap", background)
 
 		local field = AutoSizeText:new()
 		field:setText("Loading...")
@@ -50,8 +58,6 @@ function SingleKataView:new(layoutWidth, layoutHeight)
 		self.closeButton = closeButton
 		self:insert(closeButton)
 		closeButton:setLabel("Close")
-		closeButton.x = self.layoutWidth - (closeButton.width + MARGIN)
-		closeButton.y = MARGIN
 		closeButton:addEventListener("onPushButtonTouched", self)
 	end
 
@@ -78,10 +84,15 @@ function SingleKataView:new(layoutWidth, layoutHeight)
 		titleField.y = MARGIN
 		field.x = MARGIN
 		field.y = titleField.y + titleField.height + MARGIN
+
+		local closeButton = self.closeButton
+		closeButton.x = (self.layoutWidth / 2) - (closeButton.width / 2)
+		closeButton.y = field.y + field.height + MARGIN
 	end
 
 	function view:onPushButtonTouched(event)
 		self:dispatchEvent({name="onCloseSingleKataView"})
+		return true
 	end
 
 	function view:destroy()
