@@ -10,6 +10,14 @@ function ToolbarView:new()
 		background:setReferencePoint(display.TopLeftReferencePoint)
 		self.background = background
 		self:insert(background)
+		function background:touch(e)
+			return true
+		end
+		function background:tap(e)
+			return true
+		end
+		background:addEventListener("touch", background)
+		background:addEventListener("tap", background)
 
 		local buttonDailyKata = self:getButton("images/button-center.png", "images/icon-fork-knife.png", "Daily Kata")
 		self.buttonDailyKata = buttonDailyKata

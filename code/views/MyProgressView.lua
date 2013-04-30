@@ -33,7 +33,7 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 
 	-- Handle row rendering
 	function view:onRowRender( event )
-		print("onRowRender")
+		--print("onRowRender")
 	    local phase = event.phase
 	    local row = event.row
 	    local key = tostring(row.index)
@@ -52,7 +52,7 @@ function MyProgressView:new(startX, startY, layoutWidth, layoutHeight)
 	    else
 	    	local level = self.levelsHash[key]
 	    	if level then
-	    		textForRow = level.name
+	    		textForRow = level.name .. ": " .. level.description 
 	    	else
 	    		print("key:", key)
 	    		error("Nothing found for index:", key)

@@ -216,7 +216,7 @@ function KataView:new(layoutWidth, layoutHeight)
 
 		field.isVisible 		= true
 		titleField.isVisible	= true
-		motivationLinkField.isVisible = true
+		--motivationLinkField.isVisible = true
 		button.isVisible = true
 		
 		local MARGIN = view.MARGIN
