@@ -75,10 +75,9 @@ local function mainSetup()
 
 	local function testEverything()
 		local mask = graphics.newMask("images/mask.png")
-		--mask:setReferencePoint(display.TopLeftReferencePoint)
-		stage:setMask(mask)
-		stage.maskX = 318
-		stage.maskY = 478
+		--stage:setMask(mask)
+		--stage.maskX = 318
+		--stage.maskY = 478
 
 		require "services.ProgressService"
 		local service = ProgressService:new()
@@ -301,7 +300,7 @@ local function mainSetup()
 		local loginParams = {}
 		loginParams.type = "user"
 		loginParams.email = "anscamobile@jessewarden.com"
-		loginParams.password = "mako00769"
+		loginParams.password = "somepassword"
 
 		-- login to the cloud
 		cloud.login( loginParams )

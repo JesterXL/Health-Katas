@@ -55,6 +55,7 @@ function MainView:new()
 		buttonInfo:addEventListener("touch", buttonInfo)
 		self:insert(buttonInfo)
 		self.buttonInfo = buttonInfo
+		buttonInfo.isVisible = false
 
 		logo.x = 20
 		logo.y = 20
